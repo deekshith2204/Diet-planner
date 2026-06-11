@@ -1,10 +1,10 @@
 const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
-const mongoSanitize = require("express-mongo-sanitize");
 const morgan = require("morgan");
 const env = require("./config/env");
 const rateLimiter = require("./middleware/rateLimiter");
+const sanitizeRequest = require("./middleware/sanitizeRequest");
 const errorHandler = require("./middleware/errorHandler");
 const notFound = require("./middleware/notFound");
 const apiRoutes = require("./routes");
@@ -15,7 +15,7 @@ app.use(helmet());
 app.use(cors({ origin: env.clientUrl, credentials: true }));
 app.use(express.json({ limit: "10kb" }));
 app.use(express.urlencoded({ extended: true }));
-app.use(mongoSanitize());
+app.use(sanitizeRequest);
 app.use(rateLimiter);
 
 if (env.nodeEnv === "development") {
