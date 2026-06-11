@@ -8,6 +8,7 @@ const otpTokenSchema = new mongoose.Schema(
     otpHash: { type: String, required: true },
     purpose: { type: String, enum: ["email_verification", "sms_login"], required: true },
     attempts: { type: Number, default: 0 },
+    maxAttempts: { type: Number, default: 3 },
     expiresAt: { type: Date, required: true, index: { expires: 0 } },
   },
   { timestamps: true }
