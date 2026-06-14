@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import api from '../api/client'
 import AuthLayout from '../components/AuthLayout'
 import FormField from '../components/FormField'
+import getApiErrorMessage from '../utils/getApiErrorMessage'
 
 function RegisterPage() {
   const navigate = useNavigate()
@@ -24,7 +25,7 @@ function RegisterPage() {
       toast.success('Verification code sent')
       navigate('/verify-email')
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Registration failed')
+      toast.error(getApiErrorMessage(error, 'Registration failed'))
     } finally {
       setLoading(false)
     }

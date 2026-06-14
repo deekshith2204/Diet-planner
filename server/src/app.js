@@ -5,6 +5,7 @@ const morgan = require("morgan");
 const env = require("./config/env");
 const rateLimiter = require("./middleware/rateLimiter");
 const sanitizeRequest = require("./middleware/sanitizeRequest");
+const requireDatabase = require("./middleware/requireDatabase");
 const errorHandler = require("./middleware/errorHandler");
 const notFound = require("./middleware/notFound");
 const apiRoutes = require("./routes");
@@ -29,7 +30,7 @@ app.get("/health", (req, res) => {
   });
 });
 
-app.use("/api", apiRoutes);
+app.use("/api", requireDatabase, apiRoutes);
 app.use(notFound);
 app.use(errorHandler);
 

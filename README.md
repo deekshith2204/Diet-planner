@@ -43,3 +43,32 @@ server/   Express + MongoDB API
    cd client
    npm run dev
    ```
+
+## Phase 2 Authentication
+
+Authentication uses:
+
+- bcrypt password hashing
+- email OTP verification through Gmail/Nodemailer
+- optional SMS OTP login through Twilio
+- JWT-protected API routes
+- OTP expiry, attempt limits, validation, and request rate limiting
+
+Create `server/.env` from `server/.env.example` and add a Gmail app password. Twilio values are required only when SMS 2FA is enabled for a user.
+
+### Auth API
+
+```text
+POST /api/auth/register
+POST /api/auth/verify-email
+POST /api/auth/resend-email-otp
+POST /api/auth/login
+POST /api/auth/verify-sms
+GET  /api/auth/me
+```
+
+The frontend reads its API address from `client/.env`:
+
+```text
+VITE_API_URL=http://localhost:5000/api
+```

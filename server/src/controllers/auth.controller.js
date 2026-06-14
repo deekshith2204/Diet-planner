@@ -47,10 +47,12 @@ const register = asyncHandler(async (req, res) => {
     email: user.email,
     purpose: "email_verification",
   });
-  await sendEmailOtp({ email: user.email, name: user.name, otp });
+  const emailDelivery = await sendEmailOtp({ email: user.email, name: user.name, otp });
 
   res.status(201).json({
-    message: "Registration started. Check your email for the verification code.",
+    message: emailDelivery.delivered
+      ? "Registration started. Check your email for the verification code."
+      : "Registration started. Email delivery failed, so the OTP was printed in the backend terminal.",
     email: user.email,
   });
 });
@@ -98,9 +100,13 @@ const resendEmailOtp = asyncHandler(async (req, res) => {
     email: user.email,
     purpose: "email_verification",
   });
-  await sendEmailOtp({ email: user.email, name: user.name, otp });
+  const emailDelivery = await sendEmailOtp({ email: user.email, name: user.name, otp });
 
-  res.json({ message: "A new verification code has been sent" });
+  res.json({
+    message: emailDelivery.delivered
+      ? "A new verification code has been sent"
+      : "Email delivery failed, so the new OTP was printed in the backend terminal.",
+  });
 });
 
 const login = asyncHandler(async (req, res) => {
