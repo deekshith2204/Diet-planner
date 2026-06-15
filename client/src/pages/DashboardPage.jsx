@@ -1,10 +1,12 @@
-import { Activity, LogOut } from 'lucide-react'
-import { useNavigate } from 'react-router-dom'
+import { Activity, ClipboardPlus, LogOut, Pencil } from 'lucide-react'
+import { Link, useNavigate } from 'react-router-dom'
 import useAuth from '../hooks/useAuth'
+import useHealthProfile from '../hooks/useHealthProfile'
 
 function DashboardPage() {
   const navigate = useNavigate()
   const { user, logout } = useAuth()
+  const { profile, loading, missing } = useHealthProfile()
 
   function handleLogout() {
     logout()
@@ -27,7 +29,47 @@ function DashboardPage() {
       <section className="mx-auto max-w-6xl px-6 py-10">
         <p className="text-sm font-semibold text-emerald-700">ACCOUNT VERIFIED</p>
         <h1 className="mt-2 text-3xl font-bold text-slate-950">Welcome, {user.name}</h1>
-        <p className="mt-3 max-w-2xl text-slate-600">Authentication is complete. Health profile setup is the next project phase.</p>
+        <p className="mt-3 max-w-2xl text-slate-600">Your health profile powers calorie targets and condition-aware meal plans.</p>
+
+        {loading && (
+          <div className="mt-8 rounded-lg border border-slate-200 bg-white p-5 text-slate-600 shadow-sm">
+            Loading your health profile...
+          </div>
+        )}
+
+        {missing && !loading && (
+          <div className="mt-8 rounded-lg border border-emerald-200 bg-emerald-50 p-6 shadow-sm">
+            <ClipboardPlus className="text-emerald-700" size={28} />
+            <h2 className="mt-4 text-xl font-semibold text-slate-950">Set up your health profile</h2>
+            <p className="mt-2 max-w-2xl text-slate-600">
+              Add your goal, diet preference, activity level, and medical conditions before generating meal plans.
+            </p>
+            <Link to="/health-profile" className="mt-5 inline-flex rounded-md bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-emerald-700">
+              Create profile
+            </Link>
+          </div>
+        )}
+
+        {profile && !loading && (
+          <div className="mt-8 grid gap-4 md:grid-cols-3">
+            <article className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+              <p className="text-sm text-slate-500">BMI</p>
+              <p className="mt-2 text-3xl font-bold text-slate-950">{profile.bmi}</p>
+            </article>
+            <article className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+              <p className="text-sm text-slate-500">Daily target</p>
+              <p className="mt-2 text-3xl font-bold text-slate-950">{profile.targetCalories} kcal</p>
+            </article>
+            <article className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+              <p className="text-sm text-slate-500">Conditions</p>
+              <p className="mt-2 text-lg font-semibold text-slate-950">{profile.conditions.length || 'None selected'}</p>
+            </article>
+            <Link to="/health-profile" className="inline-flex items-center gap-2 rounded-md bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white md:w-fit">
+              <Pencil size={16} />
+              Edit profile
+            </Link>
+          </div>
+        )}
       </section>
     </main>
   )
