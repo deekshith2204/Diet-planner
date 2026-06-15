@@ -1,4 +1,4 @@
-import { Activity, ClipboardPlus, LogOut, Pencil } from 'lucide-react'
+import { Activity, ClipboardPlus, LogOut, Pencil, Sparkles } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 import useAuth from '../hooks/useAuth'
 import useHealthProfile from '../hooks/useHealthProfile'
@@ -67,6 +67,10 @@ function DashboardPage() {
             <Link to="/health-profile" className="inline-flex items-center gap-2 rounded-md bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white md:w-fit">
               <Pencil size={16} />
               Edit profile
+            </Link>
+            <Link to="/meal-plan" className="inline-flex items-center gap-2 rounded-md bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white md:w-fit">
+              <Sparkles size={16} />
+              Generate meal plan
             </Link>
           </div>
         )}

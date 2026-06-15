@@ -4,6 +4,7 @@ import DashboardPage from './pages/DashboardPage'
 import HealthProfilePage from './pages/HealthProfilePage'
 import HomePage from './pages/HomePage'
 import LoginPage from './pages/LoginPage'
+import MealPlanPage from './pages/MealPlanPage'
 import RegisterPage from './pages/RegisterPage'
 import VerifyEmailPage from './pages/VerifyEmailPage'
 import VerifySmsPage from './pages/VerifySmsPage'
@@ -29,6 +30,14 @@ function App() {
         element={
           <ProtectedRoute>
             <HealthProfilePage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/meal-plan"
+        element={
+          <ProtectedRoute>
+            <MealPlanPage />
           </ProtectedRoute>
         }
       />

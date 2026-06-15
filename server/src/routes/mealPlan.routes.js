@@ -1,7 +1,10 @@
 const router = require("express").Router();
+const { generateMealPlan, getTodayMealPlan } = require("../controllers/mealPlan.controller");
+const { protect } = require("../middleware/auth");
 
-router.get("/status", (req, res) => {
-  res.json({ message: "Meal plan routes ready" });
-});
+router.use(protect);
+
+router.get("/today", getTodayMealPlan);
+router.post("/generate", generateMealPlan);
 
 module.exports = router;

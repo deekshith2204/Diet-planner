@@ -9,6 +9,7 @@ const mealSchema = new mongoose.Schema(
     proteinG: { type: Number, default: 0 },
     carbsG: { type: Number, default: 0 },
     fatG: { type: Number, default: 0 },
+    keyNutrients: [{ type: String }],
     preparationTip: { type: String },
   },
   { _id: false }
@@ -20,6 +21,11 @@ const mealPlanSchema = new mongoose.Schema(
     date: { type: Date, required: true },
     meals: [mealSchema],
     totalCalories: { type: Number, required: true },
+    totalProteinG: { type: Number, default: 0 },
+    totalCarbsG: { type: Number, default: 0 },
+    totalFatG: { type: Number, default: 0 },
+    foodsToAvoid: [{ type: String }],
+    conditionTips: [{ type: String }],
     generatedBy: { type: String, enum: ["ai", "manual"], default: "ai" },
   },
   { timestamps: true }
