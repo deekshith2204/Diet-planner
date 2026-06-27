@@ -72,3 +72,28 @@ The frontend reads its API address from `client/.env`:
 ```text
 VITE_API_URL=http://localhost:5000/api
 ```
+
+## Completed Features
+
+- Health profile setup with BMI and target calorie calculation
+- AI meal plan generation with recipes, foods to avoid, condition tips, and supplement guidance
+- Food diary for actual intake and macros
+- Progress tracking for weight, energy level, and notes
+- Dashboard charts for calories consumed vs target, weight trend, adherence, and condition-specific tips
+
+### Main API Routes
+
+```text
+GET  /api/health-profile/me
+PUT  /api/health-profile/me
+GET  /api/meal-plans/today
+POST /api/meal-plans/generate
+GET  /api/food-logs
+POST /api/food-logs
+DELETE /api/food-logs/:id
+GET  /api/progress
+PUT  /api/progress
+GET  /api/dashboard/summary
+```
+
+Supplement guidance is educational only and should be confirmed with a doctor, pharmacist, or registered dietitian before use.

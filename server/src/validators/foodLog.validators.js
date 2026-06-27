@@ -1,4 +1,4 @@
-const { body, query } = require("express-validator");
+const { body, param, query } = require("express-validator");
 
 const mealTypes = ["breakfast", "snack_1", "lunch", "snack_2", "dinner", "other"];
 
@@ -21,4 +21,5 @@ const dateRangeValidation = [
 module.exports = {
   foodLogValidation,
   dateRangeValidation,
+  foodLogIdValidation: [param("id").isMongoId().withMessage("Invalid food log id")],
 };

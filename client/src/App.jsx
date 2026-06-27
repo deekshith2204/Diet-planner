@@ -1,10 +1,12 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 import ProtectedRoute from './components/ProtectedRoute'
 import DashboardPage from './pages/DashboardPage'
+import FoodLogPage from './pages/FoodLogPage'
 import HealthProfilePage from './pages/HealthProfilePage'
 import HomePage from './pages/HomePage'
 import LoginPage from './pages/LoginPage'
 import MealPlanPage from './pages/MealPlanPage'
+import ProgressPage from './pages/ProgressPage'
 import RegisterPage from './pages/RegisterPage'
 import VerifyEmailPage from './pages/VerifyEmailPage'
 import VerifySmsPage from './pages/VerifySmsPage'
@@ -38,6 +40,22 @@ function App() {
         element={
           <ProtectedRoute>
             <MealPlanPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/food-log"
+        element={
+          <ProtectedRoute>
+            <FoodLogPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/progress"
+        element={
+          <ProtectedRoute>
+            <ProgressPage />
           </ProtectedRoute>
         }
       />
