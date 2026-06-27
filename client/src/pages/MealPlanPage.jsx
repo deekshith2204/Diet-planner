@@ -1,4 +1,4 @@
-import { Bot, RefreshCw, Sparkles } from 'lucide-react'
+import { Bot, Clock, RefreshCw, ShieldAlert, Sparkles } from 'lucide-react'
 import { useState } from 'react'
 import toast from 'react-hot-toast'
 import { Link } from 'react-router-dom'
@@ -99,6 +99,23 @@ function MealPlanPage() {
                     <span className="rounded-md bg-slate-100 px-3 py-1 text-sm font-semibold text-slate-700">{meal.calories} kcal</span>
                   </div>
                   <p className="mt-4 text-sm leading-6 text-slate-600">{meal.preparationTip}</p>
+                  {meal.recipe && (
+                    <div className="mt-4 rounded-md bg-slate-50 p-4">
+                      <div className="flex flex-wrap items-center gap-3 text-sm font-medium text-slate-700">
+                        <span className="inline-flex items-center gap-1">
+                          <Clock size={15} />
+                          Prep {meal.recipe.prepTimeMinutes} min
+                        </span>
+                        <span>Cook {meal.recipe.cookTimeMinutes} min</span>
+                      </div>
+                      <h3 className="mt-3 text-sm font-semibold text-slate-950">Recipe</h3>
+                      <ol className="mt-2 list-decimal space-y-1 pl-5 text-sm leading-6 text-slate-600">
+                        {meal.recipe.steps.map((step) => (
+                          <li key={step}>{step}</li>
+                        ))}
+                      </ol>
+                    </div>
+                  )}
                   <div className="mt-4 flex flex-wrap gap-2">
                     {meal.ingredients.map((ingredient) => (
                       <span key={ingredient} className="rounded-md bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-700">{ingredient}</span>
@@ -122,6 +139,27 @@ function MealPlanPage() {
                 </ul>
               </article>
             </div>
+
+            <article className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+              <div className="flex items-start gap-3">
+                <ShieldAlert className="mt-1 text-amber-600" size={22} />
+                <div>
+                  <h2 className="text-lg font-semibold text-slate-950">Supplement suggestions</h2>
+                  <p className="mt-1 text-sm leading-6 text-slate-600">
+                    These are cautious educational suggestions, not prescriptions or treatment. Confirm with a doctor, pharmacist, or registered dietitian before starting any supplement, especially with medical conditions, pregnancy, or medication.
+                  </p>
+                </div>
+              </div>
+              <div className="mt-4 grid gap-3 md:grid-cols-2">
+                {(mealPlan.supplements || []).map((supplement) => (
+                  <div key={`${supplement.name}-${supplement.purpose}`} className="rounded-md border border-slate-200 p-4">
+                    <h3 className="font-semibold text-slate-950">{supplement.name}</h3>
+                    <p className="mt-2 text-sm leading-6 text-slate-600">{supplement.purpose}</p>
+                    <p className="mt-3 text-xs font-medium leading-5 text-amber-700">{supplement.caution}</p>
+                  </div>
+                ))}
+              </div>
+            </article>
           </div>
         )}
       </section>

@@ -33,9 +33,19 @@ function normalizeMealPlan(plan, profile) {
       fatG: Number(meal.fatG) || 0,
       keyNutrients: Array.isArray(meal.keyNutrients) ? meal.keyNutrients : [],
       preparationTip: meal.preparationTip || "",
+      recipe: {
+        prepTimeMinutes:
+          Number(meal.recipe?.prepTimeMinutes) || fallback.meals[index]?.recipe?.prepTimeMinutes || 10,
+        cookTimeMinutes:
+          Number(meal.recipe?.cookTimeMinutes) || fallback.meals[index]?.recipe?.cookTimeMinutes || 15,
+        steps: Array.isArray(meal.recipe?.steps)
+          ? meal.recipe.steps
+          : fallback.meals[index]?.recipe?.steps || [],
+      },
     })),
     foodsToAvoid: Array.isArray(plan.foodsToAvoid) ? plan.foodsToAvoid : fallback.foodsToAvoid,
     conditionTips: Array.isArray(plan.conditionTips) ? plan.conditionTips : fallback.conditionTips,
+    supplements: Array.isArray(plan.supplements) ? plan.supplements : fallback.supplements,
   };
 }
 
@@ -68,11 +78,11 @@ async function generateAiMealPlan(profile) {
         {
           role: "system",
           content:
-            "You are a careful nutrition planning assistant. Generate educational meal plans only, avoid medical diagnosis, and return valid JSON only.",
+            "You are a cautious clinical nutrition planning assistant. Generate educational meal plans only, avoid medical diagnosis, never prescribe treatment or claim to cure disease, and return valid JSON only. Supplement suggestions must be conservative, evidence-informed, food-first where possible, and must include doctor/pharmacist caution language.",
         },
         {
           role: "user",
-          content: `Create a one-day meal plan for this profile: ${JSON.stringify(prompt)}. Return JSON with keys: meals, foodsToAvoid, conditionTips. meals must include breakfast, snack_1, lunch, snack_2, dinner. Each meal needs mealType, name, ingredients array, calories, proteinG, carbsG, fatG, keyNutrients array, preparationTip. Keep total calories near targetCalories and avoid foods likely to aggravate the listed conditions.`,
+          content: `Create a one-day meal plan for this profile: ${JSON.stringify(prompt)}. Return JSON with keys: meals, foodsToAvoid, conditionTips, supplements. meals must include breakfast, snack_1, lunch, snack_2, dinner. Each meal needs mealType, name, ingredients array, calories, proteinG, carbsG, fatG, keyNutrients array, preparationTip, and recipe object with prepTimeMinutes, cookTimeMinutes, steps array. supplements must be safe educational suggestions based on selected conditions, not prescriptions. Prefer food-first suggestions and common low-risk supplements only when relevant. Each supplement needs name, purpose, relatedConditions array, caution. The caution must advise checking with a doctor/pharmacist/dietitian and mention medicine interactions or condition-specific risks where relevant. Keep total calories near targetCalories and avoid foods likely to aggravate the listed conditions.`,
         },
       ],
     }),

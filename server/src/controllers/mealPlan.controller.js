@@ -32,6 +32,7 @@ function publicMealPlan(plan) {
     totalFatG: plan.totalFatG,
     foodsToAvoid: plan.foodsToAvoid,
     conditionTips: plan.conditionTips,
+    supplements: plan.supplements,
     generatedBy: plan.generatedBy,
   };
 }
@@ -64,6 +65,7 @@ const generateMealPlan = asyncHandler(async (req, res) => {
       ...macroTotals,
       foodsToAvoid: generatedPlan.foodsToAvoid,
       conditionTips: generatedPlan.conditionTips,
+      supplements: generatedPlan.supplements,
       generatedBy: generatedPlan.generatedBy,
     },
     { new: true, upsert: true, runValidators: true, setDefaultsOnInsert: true }
