@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 import ProtectedRoute from './components/ProtectedRoute'
+import AssistantPage from './pages/AssistantPage'
 import DashboardPage from './pages/DashboardPage'
 import FoodLogPage from './pages/FoodLogPage'
 import HealthProfilePage from './pages/HealthProfilePage'
@@ -56,6 +57,14 @@ function App() {
         element={
           <ProtectedRoute>
             <ProgressPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/assistant"
+        element={
+          <ProtectedRoute>
+            <AssistantPage />
           </ProtectedRoute>
         }
       />

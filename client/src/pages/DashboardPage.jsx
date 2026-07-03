@@ -1,6 +1,8 @@
-import { Activity, ClipboardList, ClipboardPlus, LineChart as LineChartIcon, LogOut, Pencil, Scale, Sparkles } from 'lucide-react'
+import { Activity, Bot, ClipboardList, ClipboardPlus, LineChart as LineChartIcon, LogOut, Pencil, Scale, Sparkles } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Bar, BarChart, CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
+import AppShell from '../components/AppShell'
+import StatCard from '../components/StatCard'
 import useAuth from '../hooks/useAuth'
 import useDashboardSummary from '../hooks/useDashboardSummary'
 import useHealthProfile from '../hooks/useHealthProfile'
@@ -17,71 +19,60 @@ function DashboardPage() {
   }
 
   return (
-    <main className="min-h-screen bg-slate-50">
-      <header className="border-b border-slate-200 bg-white">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-          <div className="flex items-center gap-3">
-            <span className="flex size-9 items-center justify-center rounded-lg bg-emerald-600 text-white"><Activity size={20} /></span>
-            <span className="font-semibold">NutriAI</span>
-          </div>
-          <button onClick={handleLogout} title="Log out" className="flex size-9 items-center justify-center rounded-md border border-slate-200 text-slate-600 hover:bg-slate-100">
-            <LogOut size={18} />
-          </button>
-        </div>
-      </header>
-      <section className="mx-auto max-w-6xl px-6 py-10">
-        <p className="text-sm font-semibold text-emerald-700">ACCOUNT VERIFIED</p>
-        <h1 className="mt-2 text-3xl font-bold text-slate-950">Welcome, {user.name}</h1>
-        <p className="mt-3 max-w-2xl text-slate-600">Your health profile powers calorie targets and condition-aware meal plans.</p>
-
+    <AppShell
+      eyebrow="Account verified"
+      title={`Welcome, ${user.name}`}
+      subtitle="Your health profile powers calorie targets, meal generation, food tracking, and progress insights."
+      actions={
+        <button onClick={handleLogout} title="Log out" className="secondary-action">
+          <LogOut size={16} />
+          Log out
+        </button>
+      }
+    >
         {loading && (
-          <div className="mt-8 rounded-lg border border-slate-200 bg-white p-5 text-slate-600 shadow-sm">
+          <div className="panel rounded-lg p-5 text-slate-600">
             Loading your health profile...
           </div>
         )}
 
         {missing && !loading && (
-          <div className="mt-8 rounded-lg border border-emerald-200 bg-emerald-50 p-6 shadow-sm">
+          <div className="panel rounded-lg p-6">
             <ClipboardPlus className="text-emerald-700" size={28} />
             <h2 className="mt-4 text-xl font-semibold text-slate-950">Set up your health profile</h2>
             <p className="mt-2 max-w-2xl text-slate-600">
               Add your goal, diet preference, activity level, and medical conditions before generating meal plans.
             </p>
-            <Link to="/health-profile" className="mt-5 inline-flex rounded-md bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-emerald-700">
+            <Link to="/health-profile" className="primary-action mt-5">
               Create profile
             </Link>
           </div>
         )}
 
         {profile && !loading && (
-          <div className="mt-8 grid gap-4 md:grid-cols-3">
-            <article className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-              <p className="text-sm text-slate-500">BMI</p>
-              <p className="mt-2 text-3xl font-bold text-slate-950">{profile.bmi}</p>
-            </article>
-            <article className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-              <p className="text-sm text-slate-500">Daily target</p>
-              <p className="mt-2 text-3xl font-bold text-slate-950">{profile.targetCalories} kcal</p>
-            </article>
-            <article className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-              <p className="text-sm text-slate-500">Conditions</p>
-              <p className="mt-2 text-lg font-semibold text-slate-950">{profile.conditions.length || 'None selected'}</p>
-            </article>
-            <Link to="/health-profile" className="inline-flex items-center gap-2 rounded-md bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white md:w-fit">
+          <div className="grid gap-4 md:grid-cols-3">
+            <StatCard label="BMI" value={profile.bmi} helper="Calculated from profile" icon={Activity} />
+            <StatCard label="Daily target" value={`${profile.targetCalories} kcal`} helper="Goal-adjusted estimate" icon={Sparkles} />
+            <StatCard label="Conditions" value={profile.conditions.length || 'None'} helper="Used for tips and meal safety" icon={Bot} />
+            <Link to="/health-profile" className="secondary-action md:w-fit">
               <Pencil size={16} />
               Edit profile
             </Link>
-            <Link to="/meal-plan" className="inline-flex items-center gap-2 rounded-md bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white md:w-fit">
+            <Link to="/meal-plan" className="primary-action md:w-fit">
               <Sparkles size={16} />
               Generate meal plan
             </Link>
-            <Link to="/food-log" className="inline-flex items-center gap-2 rounded-md bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm ring-1 ring-slate-200 md:w-fit">
+            <Link to="/food-log" className="secondary-action md:w-fit">
               <ClipboardList size={16} />
               Food diary
             </Link>
-            <Link to="/progress" className="inline-flex items-center gap-2 rounded-md bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm ring-1 ring-slate-200 md:w-fit">
+            <Link to="/progress" className="secondary-action md:w-fit">
               <Scale size={16} />
               Progress
+            </Link>
+            <Link to="/assistant" className="secondary-action md:w-fit">
+              <Bot size={16} />
+              AI assistant
             </Link>
           </div>
         )}
@@ -89,22 +80,13 @@ function DashboardPage() {
         {profile && !loading && (
           <section className="mt-8 space-y-4">
             <div className="grid gap-4 md:grid-cols-3">
-              <article className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-                <p className="text-sm text-slate-500">Meal adherence</p>
-                <p className="mt-2 text-3xl font-bold text-slate-950">{summaryLoading ? '...' : `${summary?.adherencePercent || 0}%`}</p>
-              </article>
-              <article className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-                <p className="text-sm text-slate-500">Target calories</p>
-                <p className="mt-2 text-3xl font-bold text-slate-950">{summary?.targetCalories || profile.targetCalories}</p>
-              </article>
-              <article className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-                <p className="text-sm text-slate-500">Progress entries</p>
-                <p className="mt-2 text-3xl font-bold text-slate-950">{summary?.weightTrend?.length || 0}</p>
-              </article>
+              <StatCard label="Meal adherence" value={summaryLoading ? '...' : `${summary?.adherencePercent || 0}%`} helper="Within 15% of target" />
+              <StatCard label="Target calories" value={summary?.targetCalories || profile.targetCalories} helper="Current plan target" />
+              <StatCard label="Progress entries" value={summary?.weightTrend?.length || 0} helper="Recent weigh-ins" />
             </div>
 
             <div className="grid gap-4 lg:grid-cols-2">
-              <article className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+              <article className="panel rounded-lg p-5">
                 <h2 className="text-lg font-semibold text-slate-950">Calories consumed vs target</h2>
                 <div className="mt-4 h-72">
                   <ResponsiveContainer width="100%" height="100%">
@@ -120,7 +102,7 @@ function DashboardPage() {
                 </div>
               </article>
 
-              <article className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+              <article className="panel rounded-lg p-5">
                 <div className="flex items-center gap-2">
                   <LineChartIcon size={20} className="text-emerald-700" />
                   <h2 className="text-lg font-semibold text-slate-950">Weight trend</h2>
@@ -139,7 +121,7 @@ function DashboardPage() {
               </article>
             </div>
 
-            <article className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+            <article className="panel rounded-lg p-5">
               <h2 className="text-lg font-semibold text-slate-950">Condition-specific tips</h2>
               <div className="mt-3 grid gap-3 md:grid-cols-2">
                 {(summary?.conditionTips || []).map((tip) => (
@@ -149,8 +131,7 @@ function DashboardPage() {
             </article>
           </section>
         )}
-      </section>
-    </main>
+    </AppShell>
   )
 }
 
