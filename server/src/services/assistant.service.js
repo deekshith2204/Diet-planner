@@ -1,39 +1,52 @@
 const env = require("../config/env");
 
 async function answerUserQuestion({ message, profile }) {
-  if (!env.openaiApiKey) {
-    return "AI assistant is not configured yet. Add OPENAI_API_KEY in server/.env, then restart the backend.";
+  if (!env.geminiApiKey) {
+    return "AI assistant is not configured yet. Add GEMINI_API_KEY in server/.env, then restart the backend.";
   }
 
-  const response = await fetch("https://api.openai.com/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${env.openaiApiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      model: env.openaiModel,
-      temperature: 0.3,
-      messages: [
-        {
-          role: "system",
-          content:
-            "You are NutriAI's careful health and nutrition assistant. Answer clearly, safely, and practically. You are not a doctor. Do not diagnose, prescribe, or replace professional medical advice. For urgent symptoms or medication decisions, advise contacting a clinician.",
+  const systemInstruction =
+    "You are NutriAI's careful health and nutrition assistant. Answer clearly, safely, and practically. You are not a doctor. Do not diagnose, prescribe, or replace professional medical advice. For urgent symptoms or medication decisions, advise contacting a clinician.";
+
+  const userContent = `User profile context: ${JSON.stringify(profile || {})}\n\nQuestion: ${message}`;
+
+  const response = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/${env.geminiModel}:generateContent?key=${env.geminiApiKey}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        systemInstruction: {
+          parts: [{ text: systemInstruction }],
         },
-        {
-          role: "user",
-          content: `User profile context: ${JSON.stringify(profile || {})}\n\nQuestion: ${message}`,
+        contents: [
+          {
+            role: "user",
+            parts: [{ text: userContent }],
+          },
+        ],
+        generationConfig: {
+          temperature: 0.3,
         },
-      ],
-    }),
-  });
+      }),
+    }
+  );
 
   if (!response.ok) {
-    throw new Error("Assistant could not generate a response");
+    const errorBody = await response.text();
+    console.error("Gemini API error:", response.status, errorBody);
+
+    if (response.status === 429) {
+      throw new Error("Assistant is temporarily unavailable — the free tier rate limit was hit. Try again shortly.");
+    }
+    throw new Error(`Assistant could not generate a response (Gemini ${response.status})`);
   }
 
   const data = await response.json();
-  return data.choices?.[0]?.message?.content || "I could not generate an answer. Please try again.";
+  return (
+    data.candidates?.[0]?.content?.parts?.[0]?.text ||
+    "I could not generate an answer. Please try again."
+  );
 }
 
 module.exports = {
